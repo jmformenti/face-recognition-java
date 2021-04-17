@@ -41,7 +41,7 @@ public class FaceDetectionModel {
 				.optFilter("flavor", "server") //
 				.build();
 
-		System.out.println(ModelZoo.listModels());
+		// System.out.println(ModelZoo.listModels());
 		this.model = ModelZoo.loadModel(criteria);
 		this.predictor = model.newPredictor();
 	}

@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.atypical.face.domain.EmbeddingResult;
 import org.atypical.face.domain.EmbeddingsHolder;
 import org.atypical.face.domain.ImageElement;
 import org.atypical.face.util.ImageUtil;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.util.FileSystemUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -49,17 +52,29 @@ public class FaceEmbeddingModel {
 	public void init() throws ModelException, IOException {
 		Resource resource = new ClassPathResource("models/pytorch/vggface2/vggface2.pt");
 
-		Criteria<Image, double[]> criteria = Criteria.builder().setTypes(Image.class, double[].class)
-				.optArtifactId("ai.djl.localmodelzoo:vggface2") //
+		Path tempModelDir = extractModeltoTempDir(resource);
+
+		Criteria<Image, double[]> criteria = Criteria.builder() //
+				.setTypes(Image.class, double[].class) //
 				.optTranslator(new FaceTranslator()) //
 				.optEngine("PyTorch") //
-				.optModelUrls(resource.getFile().getParent()) //
+				.optModelUrls(tempModelDir.toString()) //
+				.optModelName("vggface2") //
 				.build();
 
 		this.model = ModelZoo.loadModel(criteria);
 		this.predictor = model.newPredictor();
 
+		FileSystemUtils.deleteRecursively(tempModelDir);
+
 		initKryo();
+	}
+
+	private Path extractModeltoTempDir(Resource resource) throws IOException {
+		Path tempModelDir = Files.createTempDirectory(resource.getFilename());
+		IOUtils.copy(resource.getInputStream(),
+				new FileOutputStream(tempModelDir.resolve(resource.getFilename()).toFile()));
+		return tempModelDir;
 	}
 
 	public void close() {

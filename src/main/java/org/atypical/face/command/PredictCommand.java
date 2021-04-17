@@ -80,8 +80,12 @@ public class PredictCommand implements Callable<Integer> {
 	}
 
 	private Path getResultPath(Path originalImagePath) {
-		return Paths.get(originalImagePath.getParent().toString(),
-				FileNameUtils.getBaseName(originalImagePath.getFileName().toString()) + "_result.jpg");
+		String filenameResult = FileNameUtils.getBaseName(originalImagePath.getFileName().toString()) + "_result.jpg";
+		if (originalImagePath.getParent() != null) {
+			return originalImagePath.getParent().resolve(filenameResult);
+		} else {
+			return Paths.get(filenameResult);
+		}
 	}
 
 }
