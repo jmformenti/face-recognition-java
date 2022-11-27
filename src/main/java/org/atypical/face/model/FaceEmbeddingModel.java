@@ -1,5 +1,6 @@
 package org.atypical.face.model;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,7 +20,6 @@ import org.atypical.face.domain.ImageElement;
 import org.atypical.face.util.ImageUtil;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.FileSystemUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -52,26 +52,27 @@ public class FaceEmbeddingModel {
 	public void init() throws ModelException, IOException {
 		Resource resource = new ClassPathResource("models/pytorch/vggface2/vggface2.pt");
 
-		Path tempModelDir = extractModeltoTempDir(resource);
+		File tempModelDir = extractModeltoTempDir(resource).toFile();
 
 		Criteria<Image, double[]> criteria = Criteria.builder() //
 				.setTypes(Image.class, double[].class) //
 				.optTranslator(new FaceTranslator()) //
 				.optEngine("PyTorch") //
-				.optModelUrls(tempModelDir.toString()) //
+				.optModelUrls(tempModelDir.toURI().toString()) //
 				.optModelName("vggface2") //
 				.build();
 
 		this.model = ModelZoo.loadModel(criteria);
 		this.predictor = model.newPredictor();
 
-		FileSystemUtils.deleteRecursively(tempModelDir);
+		deleteFolderOnExit(tempModelDir);
 
 		initKryo();
 	}
 
 	private Path extractModeltoTempDir(Resource resource) throws IOException {
 		Path tempModelDir = Files.createTempDirectory(resource.getFilename());
+
 		IOUtils.copy(resource.getInputStream(),
 				new FileOutputStream(tempModelDir.resolve(resource.getFilename()).toFile()));
 		return tempModelDir;
@@ -165,6 +166,13 @@ public class FaceEmbeddingModel {
 		NDArray uu = u.pow(2).mean();
 		NDArray vv = v.pow(2).mean();
 		return Math.abs(1 - uv / uu.mul(vv).sqrt().toDoubleArray()[0]);
+	}
+
+	private void deleteFolderOnExit(File folder) {
+		folder.deleteOnExit();
+		for (File f : folder.listFiles()) {
+			f.deleteOnExit();
+		}
 	}
 
 	class FaceTranslator implements Translator<Image, double[]> {

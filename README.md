@@ -10,9 +10,12 @@ Face identification implemented using cosine distance between calculated embeddi
 
 Commands to build the project:
 
-    git clone https://github.com/jmformenti/face-recognition-java.git
-    cd face-recognition-java
-    mvn package
+```
+git lfs install
+git clone https://github.com/jmformenti/face-recognition-java.git
+cd face-recognition-java
+mvn package
+```
 
 A fatjar `face-recognition-java-${VERSION}.jar` will be placed in target dir.
 
@@ -21,12 +24,14 @@ A fatjar `face-recognition-java-${VERSION}.jar` will be placed in target dir.
 1. Prepare data, one root directory with one subdirectory with images of each person (for example, see `src/test/resources/images/train`).
 
 2. Generate embeddings file.
-
+    ```
     java -jar target/face-recognition-java-${VERSION}.jar embed -p /path/to/root/images -e embeddings.dat
+    ```
 
 3. Recognize faces in one image.
-
+    ```
     java -jar target/face-recognition-java-${VERSION}.jar predict -e embeddings.dat -p /path/to/image
+    ```
 
 # Pretrained models
 
