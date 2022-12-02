@@ -10,9 +10,13 @@
 	</parent>
 	<groupId>io.github.jmformenti</groupId>
 	<artifactId>face-recognition-java</artifactId>
-	<version>0.2.0</version>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
+	<description>A face recognition pipeline implementation to do face detection and face identification in Java</description>
 
 	<properties>
+		<revision>0.3.0</revision>
+		
 		<java.version>11</java.version>
 		<djl.version>0.10.0</djl.version>
 	</properties>
@@ -28,64 +32,8 @@
 		</repository>
 	</distributionManagement>
 
-	<dependencies>
-		<dependency>
-			<groupId>ai.djl.paddlepaddle</groupId>
-			<artifactId>paddlepaddle-model-zoo</artifactId>
-			<version>${djl.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ai.djl.paddlepaddle</groupId>
-			<artifactId>paddlepaddle-native-auto</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>ai.djl.pytorch</groupId>
-			<artifactId>pytorch-engine</artifactId>
-			<version>${djl.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ai.djl.pytorch</groupId>
-			<artifactId>pytorch-native-auto</artifactId>
-			<version>1.7.1</version>
-		</dependency>
-		<dependency>
-			<groupId>info.picocli</groupId>
-			<artifactId>picocli-spring-boot-starter</artifactId>
-			<version>4.6.1</version>
-		</dependency>
-		<dependency>
-			<groupId>net.coobird</groupId>
-			<artifactId>thumbnailator</artifactId>
-			<version>0.4.13</version>
-		</dependency>
-		<!-- bug in jpeg orientation: https://github.com/coobird/thumbnailator/issues/108#issuecomment-578778980 -->
-		<dependency>
-			<groupId>com.twelvemonkeys.imageio</groupId>
-			<artifactId>imageio-jpeg</artifactId>
-			<version>3.6.1</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo</artifactId>
-			<version>5.0.4</version>
-		</dependency>
-
-		<!-- test -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -149,5 +97,10 @@
 			</build>
 		</profile>
 	</profiles>
+
+	<modules>
+		<module>core</module>
+		<module>cli</module>
+	</modules>
 
 </project>

@@ -17,7 +17,7 @@ cd face-recognition-java
 mvn package
 ```
 
-A fatjar `face-recognition-java-${VERSION}.jar` will be placed in target dir.
+A fatjar `face-recognition-java-${VERSION}.jar` will be placed in `cli/target` dir.
 
 # Quickstart
 
@@ -25,13 +25,14 @@ A fatjar `face-recognition-java-${VERSION}.jar` will be placed in target dir.
 
 2. Generate embeddings file.
     ```
-    java -jar target/face-recognition-java-${VERSION}.jar embed -p /path/to/root/images -e embeddings.dat
+    java -jar cli/target/face-recognition-java-${VERSION}.jar embed -p /path/to/root/images -e embeddings.dat
     ```
 
 3. Recognize faces in one image.
     ```
-    java -jar target/face-recognition-java-${VERSION}.jar predict -e embeddings.dat -p /path/to/image
+    java -jar cli/target/face-recognition-java-${VERSION}.jar predict -e embeddings.dat -p /path/to/image
     ```
+   As a result a new image with detected faces will be created in the same path with suffix `_result.jpg`. 
 
 # Pretrained models
 
