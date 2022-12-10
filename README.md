@@ -34,6 +34,12 @@ A fatjar `face-recognition-java-${VERSION}.jar` will be placed in `cli/target` d
     ```
    As a result a new image with detected faces will be created in the same path with suffix `_result.jpg`. 
 
+# Release new version
+
+```
+mvn clean deploy -P release
+```
+
 # Pretrained models
 
 Two models are used:
